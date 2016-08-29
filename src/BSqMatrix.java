@@ -110,7 +110,7 @@ public class BSqMatrix {
 	public boolean isSymmetric() {
 		boolean result = true;
 		for (int i = 0; i < mSize; i++) {
-			for (int j = 0; j < mSize; j++) {
+			for (int j = i + 1; j < mSize; j++) {
 				if (mEntries[i][j] != mEntries[j][i]) {
 					result = false;
 					break;

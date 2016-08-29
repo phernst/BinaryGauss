@@ -81,5 +81,19 @@ public class BVector {
 		result += (mEntries[mSize - 1] ? "1" : "0") + "]";
 		return result;
 	}
+	
+	public boolean equals(BVector v) {
+		if (mSize != v.mSize) {
+			return false;
+		}
+		boolean result = true;
+		for (int i = 0; i < mSize; i++) {
+			if (mEntries[i] != v.mEntries[i]) {
+				result = false;
+				break;
+			}
+		}
+		return result;
+	}
 
 }

@@ -1,13 +1,16 @@
+import java.util.ArrayList;
 
 public class BGauss {
-	public static BVector solve(BSqMatrix A, BVector b) {
-		assert A.size() == b.size() : "A and b must have the same dimensions";
+	public static ArrayList<BVector> solve(BSqMatrix A, BVector b) {
+		assert A.size() == b.size() : "A and b must have the same number of rows";
+		
+		ArrayList<BVector> result = new ArrayList<>();
 		
 		BSqMatrix U = A.deepCopy();
 		BVector z = b.deepCopy();
 		
 		for (int i = 0; i < U.size() - 1; i++) {
-			MatVec temp = sort(U, z, i);
+			MatVec temp = swapPivot(U, z, i);
 			U = temp.mat;
 			z = temp.vec;
 			for (int j = i + 1; j < U.size(); j++) {
@@ -20,12 +23,6 @@ public class BGauss {
 		
 		assert U.isUpperMatrix() : "U should be an upper matrix";
 		
-		/*for (int i = 0; i < U.size(); i++) {
-			if (U.get(i, i)) {
-				return null;
-			}
-		}*/
-		
 		BSqMatrix I = U;
 		BVector x = z;
 		for (int i = I.size() - 1; i > 0; i--) {
@@ -37,9 +34,33 @@ public class BGauss {
 			}
 		}
 		
-		assert I.equals(BSqMatrix.eye(I.size())) : "I should be an identity matrix";
 		
-		return x;
+		// check number of solutions
+		ArrayList<Integer> zeroRows = new ArrayList<>();
+		BVector zeroVec = BVector.zeros(I.size());
+		boolean solvable = true;
+		for (int i = 0; i < I.size(); i++) {
+			if (I.row(i).equals(zeroVec) && x.get(i)) {
+				solvable = false;
+				break;
+			}
+			if (I.row(i).equals(zeroVec)) {
+				zeroRows.add(i);
+			}
+		}
+		
+		// unique solution
+		if (solvable && zeroRows.isEmpty()) {
+			result.add(x);
+		}
+		
+		// more solutions
+		if (solvable && !zeroRows.isEmpty()) {
+			// TODO: implement
+			throw new UnsupportedOperationException("Not implemented, yet.");
+		}
+		
+		return result;
 	}
 	
 	private static class MatVec {
@@ -51,18 +72,19 @@ public class BGauss {
 		}
 	}
 	
-	private static MatVec sort(BSqMatrix A, BVector b, int i) {
-		if (A.get(i, i)) {
-			return new MatVec(A, b);
-		}
-		MatVec result = new MatVec(A.deepCopy(), b.deepCopy());
-		for (int j = i + 1; j < A.size(); j++) {
-			if (A.get(j, i)) {
-				result.mat = result.mat.swapRows(i, j);
-				result.vec = result.vec.swap(i, j);
-				break;
+	private static MatVec swapPivot(BSqMatrix A, BVector b, int i) {
+		MatVec result = new MatVec(A, b);
+		
+		if (!A.get(i, i)) {
+			for (int j = i + 1; j < A.size(); j++) {
+				if (A.get(j, i)) {
+					result.mat = result.mat.swapRows(i, j);
+					result.vec = result.vec.swap(i, j);
+					break;
+				}
 			}
 		}
+		
 		return result;
 	}
 }
