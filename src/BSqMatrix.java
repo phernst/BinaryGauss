@@ -78,6 +78,15 @@ public class BSqMatrix {
 		}
 	}
 	
+	public BVector col(int i) {
+		assert i >= 0 && i < mSize : "i is out of the matrix bounds";
+		BVector result = BVector.zeros(mSize);
+		for (int j = 0; j < mSize; j++) {
+			result.set(j, mEntries[j][i]);
+		}
+		return result;
+	}
+	
 	public boolean get(int i, int j) {
 		assert i >= 0 && i < mSize : "i is out of the matrix bounds";
 		assert j >= 0 && j < mSize : "j is out of the matrix bounds";

@@ -18,11 +18,12 @@ public class Test {
 				{0,0,0,0,1,1,1,1,1,1,0,1}
 			};
 		/*int[][] bMatTest = {
-				{1,1,0,0},
-				{1,1,1,0},
-				{0,1,1,1},
-				{0,0,1,1}
+				{1,0,1,0},
+				{0,1,0,1},
+				{0,0,0,0},
+				{0,0,0,0}
 			};*/
+		
 		BSqMatrix A = new BSqMatrix(bMatTest);
 		BVector b = BVector.ones(A.size());
 		
@@ -44,9 +45,9 @@ public class Test {
 		for (int i = 0; i < x.size(); i++) {
 			System.out.println("Solution " + i + ": " + x.get(i));
 			System.out.println("Number of positive entries: " + x.get(i).countTrue());
-			System.out.println("Time to get the solution: " + diffTime);
 			System.out.println();
 		}
+		System.out.println("Time to get the solution: " + diffTime);
 	}
 
 }

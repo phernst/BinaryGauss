@@ -55,9 +55,19 @@ public class BGauss {
 		}
 		
 		// more solutions
-		if (solvable && !zeroRows.isEmpty()) {
-			// TODO: implement
-			throw new UnsupportedOperationException("Not implemented, yet.");
+		else if (solvable && !zeroRows.isEmpty()) {
+			assert zeroRows.size() <= 32 : "Too many free variables";
+			for (int i = 0; i < (1 << zeroRows.size()); i++) {
+				BVector tempX = x.deepCopy();
+				for (int j = 0; j < zeroRows.size(); j++) {
+					if (((i >> j) & 1) == 1) {
+						BVector col = I.col(zeroRows.get(j));
+						col.set(zeroRows.get(j), true);
+						tempX = tempX.xor(col);
+					}
+				}
+				result.add(tempX);
+			}
 		}
 		
 		return result;
